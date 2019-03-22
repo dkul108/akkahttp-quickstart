@@ -12,3 +12,9 @@ In this free course you will get your hands dirty and build a backend applicatio
 - Unit test your routes using the Akka HTTP's testkit
 
 Hope you enjoy it!
+
+Some useful links:
+
+[https://docs.scala-lang.org/tour/tour-of-scala.html]
+[https://akka.io/docs/]
+
