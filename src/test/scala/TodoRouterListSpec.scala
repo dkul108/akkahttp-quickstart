@@ -2,7 +2,7 @@ import akka.http.scaladsl.model.{StatusCode, StatusCodes}
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.{Matchers, WordSpec}
 
-class TodoRouterListSpec extends WordSpec with Matchers with ScalatestRouteTest {
+class TodoRouterListSpec extends WordSpec with Matchers with ScalatestRouteTest with TodoMocks {
 
 
   import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
@@ -48,6 +48,33 @@ class TodoRouterListSpec extends WordSpec with Matchers with ScalatestRouteTest 
         val response = responseAs[Seq[Todo]]
         response shouldBe Seq(pendingTodo)
 
+      }
+    }
+
+    "handle repository failure in the todos route" in {
+      val repository = new FailingRepository()
+      val router = new TodoRouter(repository)
+
+      Get("/todos") ~> router.route ~> check {
+        status shouldBe StatusCodes.InternalServerError
+      }
+    }
+
+    "handle repository failure in the todos/done route" in {
+      val repository = new FailingRepository()
+      val router = new TodoRouter(repository)
+
+      Get("/todos/done") ~> router.route ~> check {
+        status shouldBe StatusCodes.InternalServerError
+      }
+    }
+
+    "handle repository failure in the todos/pending route" in {
+      val repository = new FailingRepository()
+      val router = new TodoRouter(repository)
+
+      Get("/todos/pending") ~> router.route ~> check {
+        status shouldBe StatusCodes.InternalServerError
       }
     }
   }
